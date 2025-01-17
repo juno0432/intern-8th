@@ -15,7 +15,7 @@ public class GetUserResponseDto {
     private final String nickname;
     private final List<AuthorityResponseDto> authorities;
 
-    public static GetUserResponseDto from(User user) {
+    public static GetUserResponseDto from(final User user) {
         UserRole userRole = user.getAuthorityName();
         AuthorityResponseDto authorityResponse = AuthorityResponseDto.from(userRole.getAuthorityName());
 

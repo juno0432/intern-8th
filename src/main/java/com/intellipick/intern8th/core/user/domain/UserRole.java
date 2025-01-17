@@ -15,7 +15,7 @@ public enum UserRole {
 
     private final String authorityName;
 
-    public static UserRole from(String role) {
+    public static UserRole from(final String role) {
         return Arrays.stream(UserRole.values())
                 .filter(r -> r.name().equalsIgnoreCase(role))
                 .findFirst()
