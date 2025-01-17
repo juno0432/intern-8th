@@ -2,6 +2,7 @@ package com.intellipick.intern8th.core.auth.controller;
 
 import com.intellipick.intern8th.core.auth.dto.request.SignInUserRequestDto;
 import com.intellipick.intern8th.core.auth.dto.request.SignUpUserRequestDto;
+import com.intellipick.intern8th.core.auth.dto.response.GetTokenResponseDto;
 import com.intellipick.intern8th.core.auth.dto.response.GetUserResponseDto;
 import com.intellipick.intern8th.core.auth.service.AuthService;
 import jakarta.validation.Valid;
@@ -38,13 +39,12 @@ public class AuthController {
      * 로그인 로직입니다
      *
      * @param signInUserRequestDto username, password를 입력받습니다.
-     * @return 200 OK를 반환합니다.
+     * @return 200 OK와 토큰값을 반환합니다.
      */
-    @PostMapping("/auth/signin")
-    public ResponseEntity<String> signIn(
+    @PostMapping("/auth/sign")
+    public ResponseEntity<GetTokenResponseDto> signIn(
             @Valid @RequestBody final SignInUserRequestDto signInUserRequestDto
     ) {
-        authService.signIn(signInUserRequestDto);
-        return ResponseEntity.status(HttpStatus.OK).body("로그인이 완료되었습니다.");
+        return ResponseEntity.status(HttpStatus.OK).body(authService.signIn(signInUserRequestDto));
     }
 }
