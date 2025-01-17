@@ -42,7 +42,7 @@ public class User extends Timestamped {
     @Column
     private boolean isDeleted;
 
-    private User(String username, String password, String nickname, UserRole authorityName) {
+    private User(final String username, final String password, final String nickname, final UserRole authorityName) {
         this.username = username;
         this.password = password;
         this.nickname = nickname;
