@@ -11,16 +11,16 @@ public class ErrorResponseDto {
     private final String message;
     private final Map<String, String> validations = new HashMap<>();
 
-    private ErrorResponseDto(int statusCode, String message) {
+    private ErrorResponseDto(final int statusCode, final String message) {
         this.statusCode = statusCode;
         this.message = message;
     }
 
-    public static ErrorResponseDto of(int statusCode, String message) {
+    public static ErrorResponseDto of(final int statusCode, final String message) {
         return new ErrorResponseDto(statusCode, message);
     }
 
-    public void addValidation(String fieldName, String message) {
+    public void addValidation(final String fieldName, final String message) {
         validations.put(fieldName, message);
     }
 }
