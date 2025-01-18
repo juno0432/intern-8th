@@ -39,6 +39,6 @@ jobs:
         env:
           SPRING_PROFILES_ACTIVE: test
           JWT_SECRET_KEY: ${{ secrets.JWT_SECRET_KEY }}
-          REDIS_HOST: ${{ secrets.REDIS_TEST_HOST }}
-          REDIS_PORT: ${{ secrets.REDIS_TEST_PORT }}
+          REDIS_TEST_HOST: ${{ secrets.REDIS_TEST_HOST }}
+          REDIS_TEST_PORT: ${{ secrets.REDIS_TEST_PORT }}
         run: ./gradlew test -Dspring.profiles.active=test
