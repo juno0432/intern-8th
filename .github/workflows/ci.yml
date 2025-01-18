@@ -1,0 +1,44 @@
+name: ci pipelines
+
+on:
+  pull_request:
+    branches:
+      - dev
+  push:
+    branches: [ dev ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    services:
+      redis:
+        image: redis
+        ports:
+          - 6379:6379
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Java
+        uses: actions/setup-java@v3
+        with:
+          distribution: 'adopt'
+          java-version: '17'
+
+      - name: Make gradlew executable
+        run: chmod +x ./gradlew
+
+      - name: Clean generated sources
+        run: rm -rf src/main/generated
+
+      - name: Build project
+        run: ./gradlew build -x test
+
+      - name: Run test
+        env:
+          SPRING_PROFILES_ACTIVE: test
+          JWT_SECRET_KEY: ${{ secrets.JWT_SECRET_KEY }}
+          REDIS_HOST: ${{ secrets.REDIS_TEST_HOST }}
+          REDIS_PORT: ${{ secrets.REDIS_TEST_PORT }}
+        run: ./gradlew test -Dspring.profiles.active=test
