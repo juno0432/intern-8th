@@ -19,3 +19,12 @@ spring:
     redis:
       host: ${REDIS_HOST}
       port: ${REDIS_PORT}
+
+springdoc:
+  default-consumes-media-type: application/json; charset=UTF-8 # 요청 객체 Data Type
+  default-produces-media-type: application/json; charset=UTF-8 # 응답 객체 Data Type
+  swagger-ui:
+    path: /
+    disable-swagger-default-url: true
+    display-request-duration: true
+    operations-sorter: alpha
