@@ -9,8 +9,9 @@ import lombok.RequiredArgsConstructor;
 public class GetTokenResponseDto {
 
     private final String token;
+    private final String subStringToken;
 
-    public static GetTokenResponseDto from(final String token) {
-        return new GetTokenResponseDto(token);
+    public static GetTokenResponseDto of(final String token, final String subStringToken) {
+        return new GetTokenResponseDto(token, subStringToken);
     }
 }
