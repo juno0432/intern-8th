@@ -4,7 +4,7 @@ os: linux
 files:
   - source: /
     # EC2의 어떤 경로에 저장할 지 지정한다.
-    destination: /home/ubuntu/intern
+    destination: /home/ubuntu/intern-server
 
 permissions:
   - object: /
