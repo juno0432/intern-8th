@@ -3,11 +3,11 @@ version: '3.8'
 services:
   intern:
     image: "${ECR_URL}:latest"
-    container_name: intern
+    container_name: intern-server
     ports:
       - "8080:8080"
     env_file:
-      - /home/ubuntu/intern/.env
+      - /home/ubuntu/intern-server/.env
     environment:
       DB_LINK: ${DB_LINK}
       DB_PORT: ${DB_PORT}
