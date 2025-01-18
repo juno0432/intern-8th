@@ -2,6 +2,7 @@ package com.intellipick.intern8th.common.config;
 
 import static com.intellipick.intern8th.common.constant.Const.BEARER_PREFIX;
 import static com.intellipick.intern8th.common.constant.Const.TOKEN_ACCESS_TIME;
+import static com.intellipick.intern8th.common.constant.Const.TOKEN_REFERSH_TIME;
 import static com.intellipick.intern8th.common.constant.Const.USER_AUTHORITY_NAME;
 import static com.intellipick.intern8th.common.constant.Const.USER_USERNAME;
 
@@ -15,15 +16,21 @@ import io.jsonwebtoken.security.Keys;
 import jakarta.annotation.PostConstruct;
 import java.util.Base64;
 import java.util.Date;
+import java.util.concurrent.TimeUnit;
 import javax.crypto.SecretKey;
+import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 
 @Component
+@RequiredArgsConstructor
 public class JwtUtil {
+
+    private final RedisTemplate<String, String> redisTemplate;
 
     @Value("${jwt.secret.key}")
     private String secretAccessKey;
@@ -37,8 +44,8 @@ public class JwtUtil {
         accessKey = Keys.hmacShaKeyFor(Base64.getDecoder().decode(secretAccessKey));
     }
 
-    // 토큰 생성
-    public String createToken(Long userId, String username, UserRole authorityName) {
+    // 액세스 토큰 생성
+    public String createAccessToken(Long userId, String username, UserRole authorityName) {
         Date date = new Date();
 
         return BEARER_PREFIX +
@@ -50,6 +57,26 @@ public class JwtUtil {
                         .issuedAt(date)
                         .signWith(accessKey)
                         .compact();
+    }
+
+    //리프레시 토큰 생성
+    public String createRefreshToken(Long userId, String username, UserRole authorityName) {
+        Date date = new Date();
+
+        String refreshToken = BEARER_PREFIX +
+                Jwts.builder()
+                        .subject(String.valueOf(userId))
+                        .claim(USER_USERNAME, username)
+                        .claim(USER_AUTHORITY_NAME, authorityName)
+                        .expiration(new Date(date.getTime() + TOKEN_REFERSH_TIME))
+                        .issuedAt(date)
+                        .signWith(accessKey)
+                        .compact();
+
+        String key = "user:id:" + userId;
+        redisTemplate.opsForValue().set(key, refreshToken, TOKEN_REFERSH_TIME, TimeUnit.MILLISECONDS);
+
+        return refreshToken;
     }
 
     // 토큰 검증
