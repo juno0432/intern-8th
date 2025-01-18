@@ -109,7 +109,7 @@ public class AuthController {
         response.put("token", tokenDto.getSubStringToken());
 
         return ResponseEntity.status(HttpStatus.OK)
-                .header(tokenDto.getToken())
+                .header("Authorization", tokenDto.getToken())
                 .body(response);
     }
 }
