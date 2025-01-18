@@ -47,8 +47,9 @@ public class AuthService {
             throw new ApplicationException(PASSWORD_MISMATCH);
         }
 
-        String token = jwtUtil.createToken(user.getId(), user.getUsername(), user.getAuthorityName());
+        String accessToken = jwtUtil.createAccessToken(user.getId(), user.getUsername(), user.getAuthorityName());
+        jwtUtil.createRefreshToken(user.getId(), user.getUsername(), user.getAuthorityName());
 
-        return GetTokenResponseDto.from(jwtUtil.substringToken(token));
+        return GetTokenResponseDto.of(accessToken, jwtUtil.substringToken(accessToken));
     }
 }
