@@ -6,6 +6,8 @@ import com.intellipick.intern8th.core.auth.dto.response.GetTokenResponseDto;
 import com.intellipick.intern8th.core.auth.dto.response.GetUserResponseDto;
 import com.intellipick.intern8th.core.auth.service.AuthService;
 import jakarta.validation.Valid;
+import java.util.HashMap;
+import java.util.Map;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -42,9 +44,16 @@ public class AuthController {
      * @return 200 OK와 토큰값을 반환합니다.
      */
     @PostMapping("/auth/sign")
-    public ResponseEntity<GetTokenResponseDto> signIn(
+    public ResponseEntity<Map<String, String>> signIn(
             @Valid @RequestBody final SignInUserRequestDto signInUserRequestDto
     ) {
-        return ResponseEntity.status(HttpStatus.OK).body(authService.signIn(signInUserRequestDto));
+        GetTokenResponseDto tokenDto = authService.signIn(signInUserRequestDto);
+
+        Map<String, String> response = new HashMap<>();
+        response.put("token", tokenDto.getSubStringToken());
+
+        return ResponseEntity.status(HttpStatus.OK)
+                .header(tokenDto.getToken())
+                .body(response);
     }
 }
