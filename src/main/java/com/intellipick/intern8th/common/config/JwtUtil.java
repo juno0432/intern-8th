@@ -2,7 +2,7 @@ package com.intellipick.intern8th.common.config;
 
 import static com.intellipick.intern8th.common.constant.Const.BEARER_PREFIX;
 import static com.intellipick.intern8th.common.constant.Const.TOKEN_ACCESS_TIME;
-import static com.intellipick.intern8th.common.constant.Const.TOKEN_REFERSH_TIME;
+import static com.intellipick.intern8th.common.constant.Const.TOKEN_REFRESH_TIME;
 import static com.intellipick.intern8th.common.constant.Const.USER_AUTHORITY_NAME;
 import static com.intellipick.intern8th.common.constant.Const.USER_USERNAME;
 
@@ -68,13 +68,13 @@ public class JwtUtil {
                         .subject(String.valueOf(userId))
                         .claim(USER_USERNAME, username)
                         .claim(USER_AUTHORITY_NAME, authorityName)
-                        .expiration(new Date(date.getTime() + TOKEN_REFERSH_TIME))
+                        .expiration(new Date(date.getTime() + TOKEN_REFRESH_TIME))
                         .issuedAt(date)
                         .signWith(accessKey)
                         .compact();
 
-        String key = "user:id:" + userId;
-        redisTemplate.opsForValue().set(key, refreshToken, TOKEN_REFERSH_TIME, TimeUnit.MILLISECONDS);
+        String key = "user:refresh:id" + userId;
+        redisTemplate.opsForValue().set(key, refreshToken, TOKEN_REFRESH_TIME, TimeUnit.MILLISECONDS);
 
         return refreshToken;
     }
