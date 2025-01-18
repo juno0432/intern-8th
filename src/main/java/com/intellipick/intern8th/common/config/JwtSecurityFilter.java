@@ -29,7 +29,9 @@ public class JwtSecurityFilter extends OncePerRequestFilter {
 
     private final JwtUtil jwtUtil;
 
-    private final List<String> whiteList = List.of("^/api/v(?:[1-9])/auth/[a-zA-Z\\-]+$");
+    private final List<String> whiteList = List.of(
+            "^/api/v(?:[1-9])/auth/[a-zA-Z\\-]+$",
+            "/health");
 
     @Override
     protected void doFilterInternal(
