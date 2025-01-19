@@ -55,7 +55,7 @@ public class AuthService {
             throw new ApplicationException(PASSWORD_MISMATCH);
         }
 
-        if(user.isDeleted()) {
+        if (user.isDeleted()) {
             throw new ApplicationException(NOT_FOUND_USER);
         }
 
