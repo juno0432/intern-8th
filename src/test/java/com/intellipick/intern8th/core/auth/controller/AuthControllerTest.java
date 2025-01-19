@@ -54,7 +54,7 @@ class AuthControllerTest {
 
         @Test
         @DisplayName("이미 존재하는 username일 경우 회원가입이 실패된다.")
-        void signUpFailTest() throws Exception {
+        void signUpFailsDueToExistUsername() throws Exception {
             //given
             SignUpUserRequestDto requestDto = testSignUpUserRequestDto();
 
