@@ -4,6 +4,7 @@ import static com.intellipick.intern8th.common.constant.Const.USER_AUTHORITY_NAM
 import static com.intellipick.intern8th.common.constant.Const.USER_USERNAME;
 import static com.intellipick.intern8th.data.AuthTestData.testSignInUserRequestDto;
 import static com.intellipick.intern8th.data.AuthTestData.testSignUpUserRequestDto;
+import static com.intellipick.intern8th.data.UserTestData.testDeletedUser;
 import static com.intellipick.intern8th.data.UserTestData.testUser;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
@@ -31,7 +32,6 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.core.ValueOperations;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.test.util.ReflectionTestUtils;
 
 @ExtendWith(MockitoExtension.class)
 class AuthServiceTest {
@@ -56,12 +56,12 @@ class AuthServiceTest {
     private AuthService authService;
 
     @Nested
-    @DisplayName("회원가입 테스트")
+    @DisplayName("회원가입 시")
     class SignUpTest {
 
         @Test
         @DisplayName("username이 중복되면 회원가입이 실패한다.")
-        void signUpFailDuplicateUser() {
+        void signUpFailsDuplicateUser() {
             // given
             SignUpUserRequestDto signUpUserRequestDto = testSignUpUserRequestDto();
 
@@ -73,7 +73,7 @@ class AuthServiceTest {
 
         @Test
         @DisplayName("회원가입이 성공한다.")
-        void signUpSuccess() {
+        void signUpSuccessTest() {
             // given
             SignUpUserRequestDto signUpUserRequestDto = testSignUpUserRequestDto();
 
@@ -95,12 +95,12 @@ class AuthServiceTest {
     }
 
     @Nested
-    @DisplayName("로그인 테스트")
+    @DisplayName("로그인 시")
     class SignInTest {
 
         @Test
         @DisplayName("비밀번호가 일치하지 않으면 로그인이 401에러가 발생한다.")
-        void signInFailPasswordMismatch() {
+        void signInFailsPasswordMismatch() {
             // given
             SignInUserRequestDto signInUserRequestDto = testSignInUserRequestDto();
             User user = testUser();
@@ -119,8 +119,7 @@ class AuthServiceTest {
         void signInFailDeletedUser() {
             // given
             SignInUserRequestDto signInUserRequestDto = testSignInUserRequestDto();
-            User user = testUser();
-            ReflectionTestUtils.setField(user, "isDeleted", true);
+            User user = testDeletedUser();
 
             given(userRepository.findByUsernameOrThrow(signInUserRequestDto.getUsername())).willReturn(user);
             given(passwordEncoder.matches(signInUserRequestDto.getPassword(), user.getPassword())).willReturn(true);
@@ -132,8 +131,8 @@ class AuthServiceTest {
         }
 
         @Test
-        @DisplayName("로그인 성공")
-        void signInSuccess() {
+        @DisplayName("로그인이 성공한다")
+        void signInSuccessTest() {
             // given
             SignInUserRequestDto signInUserRequestDto = testSignInUserRequestDto();
             User user = testUser();
@@ -141,18 +140,18 @@ class AuthServiceTest {
             given(userRepository.findByUsernameOrThrow(signInUserRequestDto.getUsername())).willReturn(user);
             given(passwordEncoder.matches(signInUserRequestDto.getPassword(), user.getPassword())).willReturn(true);
 
-            // when - then
+            // when & then
             assertDoesNotThrow(() -> authService.signIn(signInUserRequestDto));
         }
     }
 
     @Nested
-    @DisplayName("액세스 토큰 재발급 테스트")
+    @DisplayName("액세스 토큰 재발급시")
     class GetAccessTokenTest {
 
         @Test
-        @DisplayName("리프레시 토큰이 저장되어 있지않으면 액세스 토큰 재발급이 실패한다.")
-        void getAccessTokenFailRefreshTokenNotFound() {
+        @DisplayName("리프레시 토큰이 저장되어 있지않으면 토큰 재발급이 실패한다.")
+        void getAccessTokenFailsRefreshTokenNotFound() {
             // given
             Long userId = 1L;
             String redisKey = "user:refresh:id:" + userId;
@@ -160,13 +159,13 @@ class AuthServiceTest {
             given(redisTemplate.opsForValue()).willReturn(valueOperations);
             given(valueOperations.get(redisKey)).willReturn(null);
 
-            // when - then
+            // when & then
             assertThrows(ApplicationException.class, () -> authService.getAccessToken(userId));
         }
 
         @Test
         @DisplayName("액세스 토큰 재발급 성공")
-        void getAccessTokenSuccess() {
+        void getAccessTokenSuccessTest() {
             // given
             Long userId = 1L;
             String redisKey = "user:refresh:id:" + userId;
@@ -186,7 +185,7 @@ class AuthServiceTest {
 
             String expectedToken = authService.getAccessToken(userId);
 
-            // when - then
+            // when & then
             assertThat(expectedToken).isEqualTo(token);
         }
     }
