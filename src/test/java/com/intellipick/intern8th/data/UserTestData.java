@@ -18,4 +18,10 @@ public class UserTestData {
         ReflectionTestUtils.setField(user, "id", 1L);
         return user;
     }
+
+    public static User testDeletedUser() {
+        User user = testUser();
+        ReflectionTestUtils.setField(user, "isDeleted", true);
+        return user;
+    }
 }

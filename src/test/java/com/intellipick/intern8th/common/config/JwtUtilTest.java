@@ -49,7 +49,7 @@ public class JwtUtilTest {
 
         @Test
         @DisplayName("정상적으로 액세스 토큰을 생성한다.")
-        void testSuccess() {
+        void createAccessTokenSuccessTest() {
             User user = testUserWithToken();
 
             String accessToken = jwtUtil.createAccessToken(user.getId(), user.getUsername(), user.getAuthorityName());
@@ -71,26 +71,8 @@ public class JwtUtilTest {
     class ValidateToken {
 
         @Test
-        @DisplayName("만료된 토큰이면 에러를 발생시킨다.")
-        void testFailsDueToExpiredToken() {
-            User user = testUserWithToken();
-
-            String accessToken = jwtUtil.createAccessToken(user.getId(), user.getUsername(), user.getAuthorityName());
-            String token = jwtUtil.substringToken(accessToken);
-
-            try {
-                Thread.sleep(1000);
-            }
-            catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-
-            assertTrue(jwtUtil.validateToken(token));
-        }
-
-        @Test
         @DisplayName("잘못된 토큰이면 에러를 발생시킨다.")
-        void testFailsDueToMalformed() {
+        void validationFailsDueToMalformed() {
             // Given
             String malformedToken = "Malformed";
 
@@ -103,7 +85,7 @@ public class JwtUtilTest {
 
         @Test
         @DisplayName("토큰이 비어있으면 false를 반환한다.")
-        void testFailsDueToEmptyToken() {
+        void validationFailsDueToEmptyToken() {
             // Given
             String emptyToken = "";
 
@@ -116,12 +98,15 @@ public class JwtUtilTest {
 
         @Test
         @DisplayName("토큰이 정상적으로 조회된다.")
-        void testSuccess() {
+        void validationSuccessTest() {
+            // Given
             User user = testUserWithToken();
 
+            // When
             String accessToken = jwtUtil.createAccessToken(user.getId(), user.getUsername(), user.getAuthorityName());
             String token = jwtUtil.substringToken(accessToken);
 
+            //then
             assertTrue(jwtUtil.validateToken(token));
         }
     }
@@ -132,7 +117,7 @@ public class JwtUtilTest {
 
         @Test
         @DisplayName("토큰이 정확하지 않을때 예외를 발생시킨다.")
-        void testFailsDueToInvalidToken() {
+        void subStringTokenFailsDueToInvalidToken() {
             // Given
             String token = "invalidToken";
 
@@ -143,7 +128,7 @@ public class JwtUtilTest {
 
         @Test
         @DisplayName("토큰이 null 일 때 예외를 발생시킨다.")
-        void testFailsDueToEmptyToken() {
+        void subStringTokenDueToEmptyToken() {
             // Given
             String token = null;
 
@@ -154,7 +139,7 @@ public class JwtUtilTest {
 
         @Test
         @DisplayName("정상적으로 토큰을 substring 한다.")
-        void testSuccess() {
+        void subStringTokenSuccessTest() {
             // Given
             User user = testUserWithToken();
 
