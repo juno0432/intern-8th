@@ -3,11 +3,13 @@ package com.intellipick.intern8th.core.auth.dto.request;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotBlank;
 import lombok.AccessLevel;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
+@AllArgsConstructor
 @Schema(name = "SignInUserRequestDto - 사용자 로그인 요청 DTO",
         description = "사용자 로그인 요청 DTO")
 public class SignInUserRequestDto {
