@@ -3,6 +3,7 @@ package com.intellipick.intern8th.core.auth.service;
 import static com.intellipick.intern8th.common.constant.Const.USER_AUTHORITY_NAME;
 import static com.intellipick.intern8th.common.constant.Const.USER_USERNAME;
 import static com.intellipick.intern8th.common.exception.ErrorCode.DUPLICATE_USER;
+import static com.intellipick.intern8th.common.exception.ErrorCode.NOT_FOUND_USER;
 import static com.intellipick.intern8th.common.exception.ErrorCode.PASSWORD_MISMATCH;
 import static com.intellipick.intern8th.common.exception.ErrorCode.REFRESH_TOKEN_NOT_FOUND;
 
@@ -52,6 +53,10 @@ public class AuthService {
 
         if (!passwordEncoder.matches(signInUserRequestDto.getPassword(), user.getPassword())) {
             throw new ApplicationException(PASSWORD_MISMATCH);
+        }
+
+        if(user.isDeleted()) {
+            throw new ApplicationException(NOT_FOUND_USER);
         }
 
         String accessToken = jwtUtil.createAccessToken(user.getId(), user.getUsername(), user.getAuthorityName());
